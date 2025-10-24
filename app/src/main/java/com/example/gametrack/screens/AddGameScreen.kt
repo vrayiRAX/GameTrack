@@ -22,12 +22,10 @@ fun AddGameScreen(navController: NavController, viewModel: GameViewModel) {
     var calificacion by remember { mutableStateOf("") }
     var imagenUrl by remember { mutableStateOf<String?>(null) }
 
-    //  Este bloque busca la imagen real en la API
     LaunchedEffect(nombre) {
         if (nombre.length > 2) {
-            delay(600) // Espera un poco mientras el usuario escribe
+            delay(600)
 
-            // Esta es la llamada real a tu ApiGame.kt
             IGDBService.buscarCaratula(nombre) { url ->
                 imagenUrl = url
             }
