@@ -3,30 +3,42 @@ package com.example.gametrack
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.*
-import com.example.gametrack.screens.*
 import com.example.gametrack.ui.theme.GameTrackTheme
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import com.example.gametrack.screens.HomeScreen
+import com.example.gametrack.screens.AddGameScreen
+import com.example.gametrack.screens.LoginScreen
+import androidx.compose.foundation.layout.fillMaxSize
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             GameTrackTheme {
-                val navController = rememberNavController()
-                val gameViewModel: GameViewModel = viewModel()
+                Surface(
+                    modifier = androidx.compose.ui.Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    val navController = rememberNavController()
+                    val gameViewModel: GameViewModel = viewModel()
 
-                Surface(color = MaterialTheme.colorScheme.background) {
                     NavHost(
                         navController = navController,
-                        startDestination = "home"
+                        startDestination = "login"
                     ) {
+                        composable("login") {
+                            LoginScreen(navController = navController)
+                        }
                         composable("home") {
-                            HomeScreen(navController = navController, viewModel = gameViewModel)
+                            HomeScreen(navController, gameViewModel)
                         }
                         composable("add") {
-                            AddGameScreen(navController = navController, viewModel = gameViewModel)
+                            AddGameScreen(navController, gameViewModel)
                         }
                     }
                 }
