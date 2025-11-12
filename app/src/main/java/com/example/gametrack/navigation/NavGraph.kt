@@ -3,10 +3,8 @@ package com.example.gametrack.navigation
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-// import androidx.navigation.NavType // <-- Ya no se necesita
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-// import androidx.navigation.navArgument // <-- Ya no se necesita
 import com.example.gametrack.GameViewModel
 import com.example.gametrack.screens.AddGameScreen
 import com.example.gametrack.screens.HomeScreen
@@ -30,14 +28,11 @@ fun NavGraph(navController: NavHostController) {
             SignUpScreen(navController = navController, viewModel = gameViewModel)
         }
 
-        // --- RUTA "HOME" SIMPLIFICADA ---
         composable(
-            route = "home" // <-- 1. Vuelve a ser "home"
+            route = "home"
         ) {
-            // 2. Llama a HomeScreen solo con 2 parámetros
             HomeScreen(navController, gameViewModel)
         }
-        // ----------------------------------
 
         composable("add") {
             AddGameScreen(navController, gameViewModel)

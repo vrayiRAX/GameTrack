@@ -23,8 +23,6 @@ fun SignUpScreen(
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-
-    // 5. Obtén el contexto para poder mostrar el Toast
     val context = LocalContext.current
 
     Column(
