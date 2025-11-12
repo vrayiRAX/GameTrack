@@ -1,13 +1,13 @@
 package com.example.gametrack.data
 
-
 import androidx.room.Database
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [Game::class],
-    version = 2
+    entities = [Game::class, User::class],
+    version = 5
 )
 abstract class GameDatabase : RoomDatabase() {
     abstract fun gameDao(): GameDao
+    abstract fun userDao(): UserDao
 }

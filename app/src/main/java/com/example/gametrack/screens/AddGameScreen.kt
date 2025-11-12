@@ -1,6 +1,8 @@
 package com.example.gametrack.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -9,7 +11,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.gametrack.GameViewModel
-import com.example.gametrack.data.Game
 import com.example.gametrack.ui.theme.NeonGreen
 import kotlinx.coroutines.delay
 
@@ -44,12 +45,13 @@ fun AddGameScreen(navController: NavController, viewModel: GameViewModel) {
                 }
             )
         }
-    ) { innerPadding ->
+    ) { padding ->
         Column(
             modifier = Modifier
-                .padding(innerPadding)
-                .padding(16.dp)
-                .fillMaxSize(),
+                .padding(padding)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -60,6 +62,7 @@ fun AddGameScreen(navController: NavController, viewModel: GameViewModel) {
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(16.dp))
+
             OutlinedTextField(
                 value = plataforma,
                 onValueChange = { plataforma = it },
@@ -67,6 +70,7 @@ fun AddGameScreen(navController: NavController, viewModel: GameViewModel) {
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(16.dp))
+
             OutlinedTextField(
                 value = horas,
                 onValueChange = { horas = it },
@@ -74,10 +78,11 @@ fun AddGameScreen(navController: NavController, viewModel: GameViewModel) {
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(16.dp))
+
             OutlinedTextField(
                 value = calificacion,
                 onValueChange = { calificacion = it },
-                label = { Text("Calificación (0-10)") },
+                label = { Text("Calificación (0.0 - 10.0)") },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(24.dp))
@@ -97,13 +102,11 @@ fun AddGameScreen(navController: NavController, viewModel: GameViewModel) {
                 onClick = {
                     if (nombre.isNotBlank() && plataforma.isNotBlank() && horas.isNotBlank() && calificacion.isNotBlank()) {
                         viewModel.addGame(
-                            Game(
-                                nombre = nombre,
-                                plataforma = plataforma,
-                                horasJugadas = horas.toIntOrNull() ?: 0,
-                                calificacion = calificacion.toFloatOrNull() ?: 0f,
-                                imagenUrl = imagenUrl
-                            )
+                            nombre = nombre,
+                            plataforma = plataforma,
+                            horas = horas.toIntOrNull() ?: 0,
+                            calificacion = calificacion.toFloatOrNull() ?: 0f,
+                            imagenUrl = imagenUrl
                         )
                         navController.popBackStack()
                     }
@@ -113,6 +116,7 @@ fun AddGameScreen(navController: NavController, viewModel: GameViewModel) {
             ) {
                 Text("Guardar Juego", color = MaterialTheme.colorScheme.onPrimary)
             }
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }

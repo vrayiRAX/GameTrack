@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.MoreVert
@@ -22,13 +23,17 @@ import androidx.compose.material3.DropdownMenuItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController, viewModel: GameViewModel) {
+fun HomeScreen(
+    navController: NavController,
+    viewModel: GameViewModel
+) {
     val games by viewModel.games.collectAsState()
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showLogoutDialog by remember { mutableStateOf(false) }
     var gameToDelete by remember { mutableStateOf<Game?>(null) }
     var expanded by remember { mutableStateOf(false) }
 
+    //Diálogo para Eliminar Juego
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = {
@@ -78,6 +83,7 @@ fun HomeScreen(navController: NavController, viewModel: GameViewModel) {
         )
     }
 
+    // Diálogo para Cerrar Sesión
     if (showLogoutDialog) {
         AlertDialog(
             onDismissRequest = {
@@ -99,6 +105,7 @@ fun HomeScreen(navController: NavController, viewModel: GameViewModel) {
                 TextButton(
                     onClick = {
                         showLogoutDialog = false
+                        viewModel.logout()
                         navController.navigate("login") {
                             popUpTo("home") { inclusive = true }
                         }
@@ -137,6 +144,7 @@ fun HomeScreen(navController: NavController, viewModel: GameViewModel) {
                     )
                 },
                 actions = {
+                    //Menú de Opciones
                     Box {
                         IconButton(
                             onClick = { expanded = true }
@@ -176,10 +184,15 @@ fun HomeScreen(navController: NavController, viewModel: GameViewModel) {
                 onClick = { navController.navigate("add") },
                 containerColor = NeonGreen
             ) {
-                Text("+", color = MaterialTheme.colorScheme.onPrimary)
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Añadir juego",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
             }
         }
     ) { padding ->
+        // Lista de Juegos
         if (games.isEmpty()) {
             Box(
                 modifier = Modifier

@@ -1,20 +1,30 @@
 package com.example.gametrack.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.gametrack.GameViewModel
 import com.example.gametrack.ui.theme.NeonGreen
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController) {
-    var nombre by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
+fun LoginScreen(
+    navController: NavController,
+    viewModel: GameViewModel
+) {
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -40,44 +50,31 @@ fun LoginScreen(navController: NavController) {
             Text(
                 text = "Bienvenido a GameTrack",
                 style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            Text(
-                text = "Registra y organiza tus juegos",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 32.dp)
             )
 
             OutlinedTextField(
-                value = nombre,
-                onValueChange = { nombre = it },
-                label = { Text("Tu nombre") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                placeholder = { Text("Ej: Juan Pérez") },
+                value = username,
+                onValueChange = { username = it; showError = false },
+                label = { Text("Usuario") },
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
                 singleLine = true,
-                isError = showError && nombre.isBlank()
+                isError = showError
             )
 
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text("Correo electrónico") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 24.dp),
-                placeholder = { Text("Ej: juan@ejemplo.com") },
+                value = password,
+                onValueChange = { password = it; showError = false },
+                label = { Text("Contraseña") },
+                modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
                 singleLine = true,
-                isError = showError && email.isBlank()
+                visualTransformation = PasswordVisualTransformation(),
+                isError = showError
             )
 
             if (showError) {
                 Text(
-                    text = "Por favor, completa todos los campos",
+                    text = "Usuario o contraseña incorrectos",
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(bottom = 16.dp)
@@ -86,36 +83,36 @@ fun LoginScreen(navController: NavController) {
 
             Button(
                 onClick = {
-                    if (nombre.isNotBlank() && email.isNotBlank()) {
-                        navController.navigate("home") {
-                            popUpTo("login") { inclusive = true }
+                    if (username.isNotBlank() && password.isNotBlank()) {
+                        scope.launch {
+                            val loginExitoso = viewModel.loginUser(username, password)
+                            if (loginExitoso) {
+                                Toast.makeText(context, "¡Bienvenido, $username!", Toast.LENGTH_SHORT).show()
+                                navController.navigate("home") {
+                                    popUpTo("login") { inclusive = true }
+                                }
+                            } else {
+                                showError = true
+                            }
                         }
                     } else {
                         showError = true
                     }
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = NeonGreen,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                enabled = nombre.isNotBlank() && email.isNotBlank()
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = NeonGreen)
             ) {
                 Text(
-                    text = "Comenzar",
+                    text = "Entrar",
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
-            Text(
-                text = "Solo necesitas ingresar tus datos una vez",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            TextButton(onClick = { navController.navigate("signup") }) {
+                Text("¿No tienes cuenta? Crear una")
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class Game(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-
+    val ownerUserId: Int,
     val nombre: String,
     val plataforma: String,
     val horasJugadas: Int,
