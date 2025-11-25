@@ -9,12 +9,14 @@ import com.example.gametrack.GameViewModel
 import com.example.gametrack.screens.AddGameScreen
 import com.example.gametrack.screens.HomeScreen
 import com.example.gametrack.screens.LoginScreen
+import com.example.gametrack.screens.ProfileScreen
 import com.example.gametrack.screens.SignUpScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
 
     val gameViewModel: GameViewModel = viewModel()
+    val viewModel: GameViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -36,6 +38,13 @@ fun NavGraph(navController: NavHostController) {
 
         composable("add") {
             AddGameScreen(navController, gameViewModel)
+        }
+        composable("home") {
+            HomeScreen(navController = navController, viewModel = viewModel)
+        }
+
+        composable("profile") {
+            ProfileScreen(navController = navController, viewModel = viewModel)
         }
     }
 }
